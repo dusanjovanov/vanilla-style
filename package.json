@@ -16,7 +16,7 @@
     "require": "./dist/index.cjs",
     "default": "./dist/index.modern.js"
   },
-  "source": "src/index.ts",
+  "source": "./src/index.ts",
   "main": "./dist/index.cjs",
   "module": "./dist/index.module.js",
   "unpkg": "./dist/index.umd.js",
