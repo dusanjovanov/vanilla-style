@@ -1,0 +1,29 @@
+{
+  "name": "@dusanjovanov/vanilla-style",
+  "version": "0.1.0",
+  "description": "Vanilla CSS-in-JS library",
+  "keywords": [
+    "css-in-js",
+    "vanilla",
+    "emotion"
+  ],
+  "author": "Dusan Jovanov",
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "exports": {
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.modern.js"
+  },
+  "source": "src/index.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.module.js",
+  "unpkg": "./dist/index.umd.js",
+  "scripts": {
+    "build": "microbundle",
+    "dev": "microbundle watch"
+  },
+  "dependencies": {
+    "@emotion/css": "^11.10.0"
+  }
+}
