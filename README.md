@@ -1,6 +1,6 @@
 ## vanilla-style 🍦
 
-css-in-js library - kinda like tailwind but with objects 
+css-in-js library - kinda like tailwind but with objects
 
 ```bash
 yarn add @dusanjovanov/vanilla-style
@@ -16,7 +16,7 @@ import { createVanillaStyle, defaultTheme } from "@dusanjovanov/vanilla-style";
 const c = createVanillaStyle(defaultTheme);
 
 // or merge your theme with the defaultTheme
-// defaultTheme is more or less same as tailwind's 
+// defaultTheme is more or less same as tailwind's
 const c = createVanillaStyle({
   ...defaultTheme,
   backgroundColor: {
@@ -78,7 +78,16 @@ const className = c.selector("td,th").border[1]; // applied to child elements
 const className = c.selector("td,th").hover.border[1];
 ```
 
-About the library: 
+Media queries
+
+```tsx
+const className = c.screen.md.width.full;
+
+const className = c.screen.lg.hover.color.red500;
+```
+
+About the library:
+
 - Built with Typescript and has full type inference
 - Framework agnostic (just has to be JS)
 - 1 dependency: @emotion/css
