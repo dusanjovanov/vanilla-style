@@ -5,7 +5,8 @@
   "keywords": [
     "css-in-js",
     "vanilla",
-    "emotion"
+    "emotion",
+    "tailwind"
   ],
   "author": "Dusan Jovanov",
   "license": "MIT",
