@@ -1,6 +1,6 @@
 {
   "name": "@dusanjovanov/vanilla-style",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Vanilla CSS-in-JS library",
   "keywords": [
     "css-in-js",
@@ -11,13 +11,12 @@
   "author": "Dusan Jovanov",
   "license": "MIT",
   "private": false,
-  "type": "module",
   "exports": {
-    "require": "./dist/index.cjs",
+    "require": "./dist/index.js",
     "default": "./dist/index.modern.js"
   },
   "source": "./src/index.ts",
-  "main": "./dist/index.cjs",
+  "main": "./dist/index.js",
   "module": "./dist/index.module.js",
   "unpkg": "./dist/index.umd.js",
   "scripts": {
