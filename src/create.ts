@@ -372,7 +372,7 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     alignSelf = this.#p("alignSelf");
     justifyItems = this.#p("justifyItems");
     justifyContent = this.#p("justifyContent");
-    justifySelf = this.#p("alignSelf");
+    justifySelf = this.#p("justifySelf");
     position = this.#p("position");
     gridTemplateColumns = this.#p("gridTemplateColumns");
     gridTemplateRows = this.#p("gridTemplateRows");
