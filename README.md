@@ -8,8 +8,6 @@ yarn add @dusanjovanov/vanilla-style
 
 ### Usage
 
-Basically:
-
 ```tsx
 import { createVanillaStyle, defaultTheme } from "@dusanjovanov/vanilla-style";
 
@@ -54,9 +52,9 @@ const Button = () => {
 If you need a custom (fixed) value, you can do this:
 
 ```tsx
-const className = c.fontSize(14);
+const className = c.fontSize.custom(14);
 // or
-const className = c.fontSize("20px");
+const className = c.fontSize.custom("20px");
 
 // this works for any css property
 ```
@@ -75,7 +73,10 @@ Custom selector function
 const className = c.selector("td,th").border[1]; // applied to child elements
 
 // you can chain pseudo selectors as well
-const className = c.selector("td,th").hover.border[1];
+const className = c.selector("td,th").hover.border[1]; // this is applied when the child elements are hovered
+
+// when the parent is hovered
+const className = c.selector(":hover td,th").border[1];
 ```
 
 Media queries
