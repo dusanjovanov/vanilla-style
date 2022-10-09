@@ -401,7 +401,7 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     outlineOffset = this.#p("outlineOffset");
   }
 
-  const selectorCache = {} as Record<string, PseudoSelectors>;
+  const selectorCache = {} as Record<string, any>;
 
   class PseudoSelectors extends Base {
     constructor(selector?: string) {
@@ -414,22 +414,7 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
       this.hover = s(":hover");
       this.active = s(":active");
       this.focus = s(":focus");
-      this.focusWithin = s(":focus-within");
-      this.visited = s(":visited");
       this.disabled = s(":disabled");
-      this.enabled = s(":enabled");
-      this.focusVisible = s(":focus-visible");
-      this.target = s(":target");
-      this.firstChild = s(":first-child");
-      this.lastChild = s(":last-child");
-      this.onlyChild = s(":only-child");
-      this.empty = s(":empty");
-      this.checked = s(":checked");
-      this.indeterminate = s(":indeterminate");
-      this.default = s(":default");
-      this.required = s(":required");
-      this.valid = s(":valid");
-      this.invalid = s(":invalid");
       this.after = s("::after");
       this.before = s("::before");
     }
@@ -437,22 +422,7 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     hover: Base;
     active: Base;
     focus: Base;
-    focusWithin: Base;
-    visited: Base;
     disabled: Base;
-    enabled: Base;
-    focusVisible: Base;
-    target: Base;
-    firstChild: Base;
-    lastChild: Base;
-    onlyChild: Base;
-    empty: Base;
-    checked: Base;
-    indeterminate: Base;
-    default: Base;
-    required: Base;
-    valid: Base;
-    invalid: Base;
     after: Base;
     before: Base;
   }
@@ -460,10 +430,10 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
   class Selector extends PseudoSelectors {
     selector = (selector: string) => {
       if (selectorCache[selector]) {
-        return selectorCache[selector];
+        return selectorCache[selector] as PseudoSelectors;
       }
       selectorCache[selector] = new PseudoSelectors(selector);
-      return selectorCache[selector];
+      return selectorCache[selector] as PseudoSelectors;
     };
   }
 
