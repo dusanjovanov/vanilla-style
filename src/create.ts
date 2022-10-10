@@ -7,13 +7,23 @@ type GenericTheme = {
 
 type CustomFn = (arg: string | number) => string;
 
-type Utils<Theme extends GenericTheme> = {
+type Utils = {
   truncate: string;
-  spaceBetweenX: (value: keyof Theme["spacing"]) => string;
-  spaceBetweenY: (value: keyof Theme["spacing"]) => string;
-  spaceBetweenXCustom: (value: string) => string;
-  spaceBetweenYCustom: (value: string) => string;
 };
+
+const sides = ["top", "right", "bottom", "left"];
+
+const borderCssProps = {} as any;
+
+const brCssProps = {} as any;
+
+for (const side of sides) {
+  borderCssProps[`except${side.toUpperCase()}`] = sides
+    .filter((s) => s !== side)
+    .map((s) => `border${s.toUpperCase()}`);
+  borderCssProps[side] = `border${side.toUpperCase()}`;
+  brCssProps[side] = `border${side.toUpperCase()}Radius`;
+}
 
 export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
   const _keyframes = {} as any;
@@ -41,31 +51,14 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
             },
           },
         }
-      ) as Utils<Theme>;
-
-      const spaceBetweenFn =
-        (cssProp: string) => (value: keyof Theme["spacing"]) => {
-          if (this.#selector) {
-            return css({
-              [`${this.#selector} > * + *`]: this.#getStyleObject(
-                cssProp,
-                value
-              ),
-            });
-          }
-          return css({
-            "> * + *": this.#getStyleObject(cssProp, value),
-          });
-        };
-      this.utils.spaceBetweenX = spaceBetweenFn("marginLeft");
-      this.utils.spaceBetweenY = spaceBetweenFn("marginTop");
+      ) as Utils;
     }
     #selector?: any;
-    utils = {} as Utils<Theme>;
+    utils = {} as Utils;
 
     #custom = (cssProps: string | string[]) => {
       return {
-        custom: (value: any) => {
+        custom: (value: string | number) => {
           return css(this.#getCssObject(cssProps, value));
         },
       };
@@ -74,18 +67,22 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     #p = <ThemeSlot extends keyof GenericTheme>(
       themeSlot: ThemeSlot,
       cssProps?: string | string[],
-      getValue?: (name: string) => any
+      other?: { getValue?: (name: string) => any; customSelector?: string }
     ) => {
       const obj = this.#custom(cssProps ?? (themeSlot as string));
       const themeObj: any = theme[themeSlot];
       const inst = this;
+      const { getValue, customSelector } = other ?? {};
       for (const name of Object.keys(themeObj as {})) {
         Object.defineProperty(obj, name, {
           get() {
             return css(
               inst.#getCssObject(
                 cssProps ?? (themeSlot as string),
-                typeof getValue === "function" ? getValue(name) : themeObj[name]
+                typeof getValue === "function"
+                  ? getValue(name)
+                  : themeObj[name],
+                customSelector
               )
             );
           },
@@ -98,10 +95,15 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
       };
     };
 
-    #getCssObject = (cssProps: string | string[], value: any) => {
+    #getCssObject = (
+      cssProps: string | string[],
+      value: any,
+      customSelector?: string
+    ) => {
       if (this.#selector) {
         return {
-          [this.#selector]: this.#getStyleObject(cssProps, value),
+          [this.#selector + (customSelector ? `${customSelector}` : "")]:
+            this.#getStyleObject(cssProps, value),
         };
       }
       return this.#getStyleObject(cssProps, value);
@@ -188,40 +190,81 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
         return css(this.#getCssObject(cssProp, border));
       };
 
-    #borderShorthand =
-      (cssProps: string | string[]) =>
-      <
-        BW extends keyof Theme["borderWidth"],
-        BS extends keyof Theme["borderStyle"],
-        BC extends keyof Theme["borderColor"]
-      >(
-        borderWidth: BW,
-        borderStyle?: BS,
-        borderColor?: BC
-      ) => {
-        return this.#borderAndOutlineShorthand("border", cssProps, [
-          borderWidth,
-          borderStyle,
-          borderColor,
-        ]);
+    #borderShorthand = (cssProps: string | string[]) => {
+      return {
+        width: this.#p("borderWidth", cssProps),
+        style: this.#p("borderStyle", cssProps),
+        color: this.#p("borderColor", cssProps),
+        shorthand: <
+          BW extends keyof Theme["borderWidth"],
+          BS extends keyof Theme["borderStyle"],
+          BC extends keyof Theme["borderColor"]
+        >(
+          borderWidth: BW,
+          borderStyle?: BS,
+          borderColor?: BC
+        ) => {
+          return this.#borderAndOutlineShorthand("border", cssProps, [
+            borderWidth,
+            borderStyle,
+            borderColor,
+          ]);
+        },
+        shorthandCustom: this.#borderAndOutlineCustom(cssProps),
       };
+    };
 
     // special border shorthand methods
     border = {
       all: this.#borderShorthand("border"),
-      custom: this.#borderAndOutlineCustom("border"),
-      top: this.#borderShorthand("borderTop"),
-      topCustom: this.#borderAndOutlineCustom("borderTop"),
-      bottom: this.#borderShorthand("borderBottom"),
-      bottomCustom: this.#borderAndOutlineCustom("borderBottom"),
-      left: this.#borderShorthand("borderLeft"),
-      leftCustom: this.#borderAndOutlineCustom("borderLeft"),
-      right: this.#borderShorthand("borderRight"),
-      rightCustom: this.#borderAndOutlineCustom("borderRight"),
-      x: this.#borderShorthand(["borderLeft", "borderRight"]),
-      y: this.#borderShorthand(["borderTop", "borderBottom"]),
-      xCustom: this.#borderAndOutlineCustom(["borderLeft", "borderRight"]),
-      yCustom: this.#borderAndOutlineCustom(["borderTop", "borderBottom"]),
+      top: this.#borderShorthand(borderCssProps.top),
+      bottom: this.#borderShorthand(borderCssProps.bottom),
+      left: this.#borderShorthand(borderCssProps.left),
+      right: this.#borderShorthand(borderCssProps.right),
+      x: this.#borderShorthand([borderCssProps.left, borderCssProps.right]),
+      y: this.#borderShorthand([borderCssProps.top, borderCssProps.bottom]),
+      topRight: this.#borderShorthand([
+        borderCssProps.top,
+        borderCssProps.right,
+      ]),
+      bottomRight: this.#borderShorthand([
+        borderCssProps.bottom,
+        borderCssProps.right,
+      ]),
+      topLeft: this.#borderShorthand([borderCssProps.top, borderCssProps.left]),
+      bottomLeft: this.#borderShorthand([
+        borderCssProps.bottom,
+        borderCssProps.left,
+      ]),
+      allExceptTop: this.#borderShorthand(borderCssProps.exceptTop),
+      allExceptBottom: this.#borderShorthand(borderCssProps.exceptBottom),
+      allExceptLeft: this.#borderShorthand(borderCssProps.exceptLeft),
+      allExceptRight: this.#borderShorthand(borderCssProps.exceptRight),
+    };
+
+    #borderRadiusProp = (cssProps: string | string[]) => {
+      return this.#p("borderRadius", cssProps);
+    };
+
+    // special borderRadius properties per side
+    borderRadius = {
+      all: this.#borderRadiusProp("borderRadius"),
+      custom: this.#custom("borderRadius"),
+      right: this.#borderRadiusProp(brCssProps.right),
+      left: this.#borderRadiusProp(brCssProps.left),
+      bottom: this.#borderRadiusProp(brCssProps.bottom),
+      top: this.#borderRadiusProp(brCssProps.top),
+      topRight: this.#borderRadiusProp([brCssProps.top, brCssProps.right]),
+      bottomRight: this.#borderRadiusProp([
+        brCssProps.bottom,
+        brCssProps.right,
+      ]),
+      topLeft: this.#borderRadiusProp([brCssProps.top, brCssProps.left]),
+      bottomLeft: this.#borderRadiusProp([brCssProps.bottom, brCssProps.left]),
+      rightCustom: this.#custom(brCssProps.right),
+      leftCustom: this.#custom(brCssProps.left),
+      topCustom: this.#custom(brCssProps.top),
+      bottomCustom: this.#custom(brCssProps.bottom),
     };
 
     #outlineShorthand =
@@ -245,10 +288,14 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
         ]);
       };
 
-    // special outline shorthand methods
+    // special outline single property and shorthand methods
     outline = {
-      all: this.#outlineShorthand("outline"),
-      custom: this.#borderAndOutlineCustom("outline"),
+      shorthand: this.#outlineShorthand("outline"),
+      shorthandCustom: this.#borderAndOutlineCustom("outline"),
+      width: this.#p("outlineWidth"),
+      style: this.#p("outlineStyle"),
+      color: this.#p("outlineColor"),
+      offset: this.#p("outlineOffset"),
     };
 
     // special animation methods
@@ -256,11 +303,17 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
       return css(this.#getCssObject("animation", value));
     };
 
-    animationName = this.#p(
-      "keyframes",
-      "animationName",
-      (name) => _keyframes[name]
-    );
+    animationName = this.#p("keyframes", "animationName", {
+      getValue: (name) => _keyframes[name],
+    });
+
+    // special utility? properties, but like regular properties
+    spaceBetweenX = this.#p("spacing", "marginLeft", {
+      customSelector: "> * + *",
+    });
+    spaceBetweenY = this.#p("spacing", "marginTop", {
+      customSelector: "> * + *",
+    });
 
     // single value -> single or multiple related properties
     bg = this.#p("backgroundColor");
@@ -280,45 +333,6 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     mt = this.#p("margin", "marginTop");
     mb = this.#p("margin", "marginBottom");
     fontSize = this.#p("fontSize");
-    borderRadius = this.#p("borderRadius");
-    borderTopRadius = this.#p("borderRadius", [
-      "borderTopLeftRadius",
-      "borderTopRightRadius",
-    ]);
-    borderBottomRadius = this.#p("borderRadius", [
-      "borderBottomLeftRadius",
-      "borderBottomRightRadius",
-    ]);
-    borderRightRadius = this.#p("borderRadius", [
-      "borderTopRightRadius",
-      "borderBottomRightRadius",
-    ]);
-    borderLeftRadius = this.#p("borderRadius", [
-      "borderTopLeftRadius",
-      "borderBottomLeftRadius",
-    ]);
-    borderTopRightRadius = this.#p("borderRadius", "borderTopRightRadius");
-    borderTopLeftRadius = this.#p("borderRadius", "borderTopLeftRadius");
-    borderBottomRightRadius = this.#p(
-      "borderRadius",
-      "borderBottomRightRadius"
-    );
-    borderBottomLeftRadius = this.#p("borderRadius", "borderBottomLeftRadius");
-    borderWidth = this.#p("borderWidth");
-    borderStyle = this.#p("borderStyle");
-    borderColor = this.#p("borderColor");
-    borderTopWidth = this.#p("borderWidth", "borderTopWidth");
-    borderBottomWidth = this.#p("borderWidth", "borderBottomWidth");
-    borderLeftWidth = this.#p("borderWidth", "borderLeftWidth");
-    borderRightWidth = this.#p("borderWidth", "borderRightWidth");
-    borderTopStyle = this.#p("borderStyle", "borderTopStyle");
-    borderBottomStyle = this.#p("borderStyle", "borderBottomStyle");
-    borderLeftStyle = this.#p("borderStyle", "borderLeftStyle");
-    borderRightStyle = this.#p("borderStyle", "borderRightStyle");
-    borderTopColor = this.#p("borderColor", "borderTopColor");
-    borderBottomColor = this.#p("borderColor", "borderBottomColor");
-    borderLeftColor = this.#p("borderColor", "borderLeftColor");
-    borderRightColor = this.#p("borderColor", "borderRightColor");
     width = this.#p("width");
     height = this.#p("height");
     lineHeight = this.#p("lineHeight");
@@ -376,10 +390,10 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     position = this.#p("position");
     gridTemplateColumns = this.#p("gridTemplateColumns");
     gridTemplateRows = this.#p("gridTemplateRows");
-    gridColumn = this.#p("gridColumn");
+    gridColumnSpan = this.#p("gridColumnSpan");
     gridColumnStart = this.#p("gridColumnStart");
     gridColumnEnd = this.#p("gridColumnEnd");
-    gridRow = this.#p("gridRow");
+    gridRowSpan = this.#p("gridRowSpan");
     gridRowStart = this.#p("gridRowStart");
     gridRowEnd = this.#p("gridRowEnd");
     order = this.#p("order");
@@ -395,10 +409,6 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     wordBreak = this.#p("wordBreak");
     whiteSpace = this.#p("whiteSpace");
     content = this.#p("content");
-    outlineWidth = this.#p("outlineWidth");
-    outlineColor = this.#p("outlineColor");
-    outlineStyle = this.#p("outlineStyle");
-    outlineOffset = this.#p("outlineOffset");
   }
 
   const selectorCache = {} as Record<string, any>;
@@ -419,6 +429,14 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
       this.before = s("::before");
     }
 
+    selector = (selector: string) => {
+      if (selectorCache[selector]) {
+        return selectorCache[selector] as Base;
+      }
+      selectorCache[selector] = new Base(selector);
+      return selectorCache[selector] as Base;
+    };
+
     hover: Base;
     active: Base;
     focus: Base;
@@ -427,23 +445,13 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     before: Base;
   }
 
-  class Selector extends PseudoSelectors {
-    selector = (selector: string) => {
-      if (selectorCache[selector]) {
-        return selectorCache[selector] as PseudoSelectors;
-      }
-      selectorCache[selector] = new PseudoSelectors(selector);
-      return selectorCache[selector] as PseudoSelectors;
-    };
-  }
-
-  class Dark extends Selector {
+  class Dark extends PseudoSelectors {
     constructor(selector?: string) {
       super(selector);
-      this.dark = new Selector(`${selector ?? ""} .dark &`);
+      this.dark = new PseudoSelectors(`${selector ?? ""} .dark &`);
     }
 
-    dark: Selector;
+    dark: PseudoSelectors;
   }
 
   class Breakpoints extends Dark {
