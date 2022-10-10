@@ -6,6 +6,9 @@ css-in-js library - kinda like tailwind but with objects
 yarn add @dusanjovanov/vanilla-style
 ```
 
+[![npm](https://img.shields.io/npm/v/@dusanjovanov/vanilla-style?color=%236f42c1&style=for-the-badge)](https://www.npmjs.com/package/@dusanjovanov/vanilla-style)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/@dusanjovanov/vanilla-style?color=%236f42c1&style=for-the-badge)
+
 ### Usage
 
 ```tsx
@@ -37,7 +40,7 @@ const Button = () => {
         c.bg.blue500,
         c.hover.bg.blue700,
         c.color.white,
-        c.rounded.md
+        c.borderRadius.all.md
       )}
     >
       Button
@@ -70,13 +73,13 @@ const className = c.focus.boxShadow.md; // applied on focus
 Custom selector function
 
 ```tsx
-const className = c.selector("td,th").border[1]; // applied to child elements
+const className = c.selector("td,th").border.all.width[1]; // applied to child elements
 
 // you can chain pseudo selectors as well
-const className = c.selector("td,th").hover.border[1]; // this is applied when the child elements are hovered
+const className = c.selector("td,th").hover.border.right.style.solid; // this is applied when the child elements are hovered
 
 // when the parent is hovered
-const className = c.selector(":hover td,th").border[1];
+const className = c.selector(":hover td,th").border.bottom.color.custom("red");
 ```
 
 Media queries
@@ -94,3 +97,5 @@ About the library:
 - 1 dependency: @emotion/css
 
 🔔 There will be a docs site with more details and examples soon!
+
+Also stable version coming soon!
