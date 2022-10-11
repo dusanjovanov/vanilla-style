@@ -298,14 +298,22 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
       offset: this.#p("outlineOffset"),
     };
 
-    // special animation methods
-    animation = (value: string) => {
-      return css(this.#getCssObject("animation", value));
+    // special animation single property and shorthand method
+    animation = {
+      shorthand: (value: string) => {
+        return css(this.#getCssObject("animation", value));
+      },
+      name: this.#p("keyframes", "animationName", {
+        getValue: (name) => _keyframes[name],
+      }),
+      duration: this.#p("animationDuration"),
+      direction: this.#p("animationDirection"),
+      timingFunction: this.#p("animationTimingFunction"),
+      playState: this.#p("animationPlayState"),
+      iterationCount: this.#p("animationIterationCount"),
+      fillMode: this.#p("animationFillMode"),
+      delay: this.#p("animationDelay"),
     };
-
-    animationName = this.#p("keyframes", "animationName", {
-      getValue: (name) => _keyframes[name],
-    });
 
     // special utility? properties, but like regular properties
     spaceBetweenX = this.#p("spacing", "marginLeft", {
@@ -356,13 +364,6 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     transitionProperty = this.#p("transitionProperty");
     transitionTimingFunction = this.#p("transitionTimingFunction");
     transitionDelay = this.#p("transitionDelay");
-    animationDirection = this.#p("animationDirection");
-    animationDelay = this.#p("animationDelay");
-    animationTimingFunction = this.#p("animationTimingFunction");
-    animationPlayState = this.#p("animationPlayState");
-    animationIterationCount = this.#p("animationIterationCount");
-    animationFillMode = this.#p("animationFillMode");
-    animationDuration = this.#p("animationDuration");
     display = this.#p("display");
     flexWrap = this.#p("flexWrap");
     flexGrow = this.#p("flexGrow");
@@ -471,6 +472,5 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
 
   return {
     classes: new Breakpoints(),
-    animationNames: _keyframes,
   };
 }

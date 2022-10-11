@@ -7,18 +7,18 @@ yarn add @dusanjovanov/vanilla-style
 ```
 
 [![npm](https://img.shields.io/npm/v/@dusanjovanov/vanilla-style?color=%236f42c1&style=for-the-badge)](https://www.npmjs.com/package/@dusanjovanov/vanilla-style)
-![npm bundle size](https://img.shields.io/bundlephobia/minzip/@dusanjovanov/vanilla-style?color=%236f42c1&style=for-the-badge)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@dusanjovanov/vanilla-style?color=%236f42c1&style=for-the-badge)](https://bundlephobia.com/package/@dusanjovanov/vanilla-style@0.4.1)
 
 ### Usage
 
 ```tsx
 import { createVanillaStyle, defaultTheme } from "@dusanjovanov/vanilla-style";
 
-const c = createVanillaStyle(defaultTheme);
+const { classes: c } = createVanillaStyle(defaultTheme);
 
 // or merge your theme with the defaultTheme
 // defaultTheme is more or less same as tailwind's
-const c = createVanillaStyle({
+const { classes: c } = createVanillaStyle({
   ...defaultTheme,
   backgroundColor: {
     ...defaultTheme.backgroundColor,
@@ -88,6 +88,54 @@ Media queries
 const className = c.screen.md.width.full;
 
 const className = c.screen.lg.hover.color.red500;
+```
+
+Animations
+
+There are a few built in animations (same as Tailwind).
+
+```tsx
+const { classes: c } = createVanillaStyle(defaultTheme);
+
+// special animation shorthand method
+// animation shothand doesn't have individual, ordered arguments like the border and outline shorthands
+// it just accepts a string - css animation has too many properties :)
+const className = c.animation.shorthand(
+  `350ms ${c.animation.name.spin} linear infinite`
+);
+
+// or set everything individually
+const className = cx(
+  c.animation.duration[500],
+  c.animation.name.spin,
+  c.animation.timingFunction.linear
+  c.animation.iterationCount.infinite,
+);
+
+// custom animation (not from the theme)
+// animation name needs to the string that keyframes returns !
+import { keyframes } from "@dusanjovanov/vanilla-style"; // reexported from @emotion/css
+
+const bounce = keyframes({
+  "from, 20%, 53%, 80%, to": {
+    transform: "translate3d(0,0,0)",
+  },
+  "40%, 43%": {
+    transform: "translate3d(0, -30px, 0)",
+  },
+  "70%": {
+    transform: "translate3d(0, -15px, 0)",
+  },
+  "90%": {
+    transform: "translate3d(0,-4px,0)",
+  },
+});
+
+// shorthand
+const className = c.animation.shorthand(`1s ${bounce} ease infinite`);
+
+// individual property
+const className = c.animation.name.custom(bounce);
 ```
 
 About the library:
