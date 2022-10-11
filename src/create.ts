@@ -17,12 +17,16 @@ const borderCssProps = {} as any;
 
 const brCssProps = {} as any;
 
+const capitalize = (s: string) => {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
 for (const side of sides) {
-  borderCssProps[`except${side.toUpperCase()}`] = sides
+  borderCssProps[`except${capitalize(side)}`] = sides
     .filter((s) => s !== side)
-    .map((s) => `border${s.toUpperCase()}`);
-  borderCssProps[side] = `border${side.toUpperCase()}`;
-  brCssProps[side] = `border${side.toUpperCase()}Radius`;
+    .map((s) => `border${capitalize(s)}`);
+  borderCssProps[side] = `border${capitalize(side)}`;
+  brCssProps[side] = `border${capitalize(side)}Radius`;
 }
 
 export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
@@ -131,12 +135,13 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     };
 
     #getBorderValues = (cssProp: string, w: any, s: any, c: any, o: any) => {
+      let value = "";
+      if (w) value += w;
+      if (s) value += " " + s;
+      if (c) value += " " + c;
       const cssObject = {
-        [`${cssProp}Width`]: w,
-        [`${cssProp}Style`]: s,
-        [`${cssProp}Color`]: c,
+        [`${cssProp}`]: value,
       };
-
       if (o) {
         cssObject[`${cssProp}Offset`] = o;
       }
@@ -254,13 +259,10 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
       left: this.#borderRadiusProp(brCssProps.left),
       bottom: this.#borderRadiusProp(brCssProps.bottom),
       top: this.#borderRadiusProp(brCssProps.top),
-      topRight: this.#borderRadiusProp([brCssProps.top, brCssProps.right]),
-      bottomRight: this.#borderRadiusProp([
-        brCssProps.bottom,
-        brCssProps.right,
-      ]),
-      topLeft: this.#borderRadiusProp([brCssProps.top, brCssProps.left]),
-      bottomLeft: this.#borderRadiusProp([brCssProps.bottom, brCssProps.left]),
+      topRight: this.#borderRadiusProp("borderTopRightRadius"),
+      bottomRight: this.#borderRadiusProp("borderBottomRightRadius"),
+      topLeft: this.#borderRadiusProp("borderTopLeftRadius"),
+      bottomLeft: this.#borderRadiusProp("borderBottomLeftRadius"),
       rightCustom: this.#custom(brCssProps.right),
       leftCustom: this.#custom(brCssProps.left),
       topCustom: this.#custom(brCssProps.top),
