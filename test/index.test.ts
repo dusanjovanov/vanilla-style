@@ -6,7 +6,6 @@ const { classes: c } = createVanillaStyle(defaultTheme);
 const createTest = (className: string, css: string) => {
   const container = document.createElement("div");
   const element = document.createElement("div");
-  element.dataset.testid = "div";
   element.className = className;
   container.appendChild(element);
   expect(element).toHaveStyle(css);
@@ -19,8 +18,10 @@ test("test1", () => {
   );
   createTest(
     c.border.all.shorthand(1, "solid", "black"),
-    `border-width: 1px; border-style: solid; border-color: #000`
+    `border: 1px solid #000;`
   );
+
+  createTest(c.border.all.shorthandCustom("2px solid"), "border: 2px solid;");
 
   createTest(c.borderRadius.all.md, `border-radius: 0.375rem;`);
 
@@ -37,7 +38,7 @@ test("test1", () => {
 
   createTest(
     c.outline.shorthand(1, "solid", "black", 1),
-    `outline-width: 1px; outline-style: solid; outline-color: #000;`
+    `outline: 1px solid #000;`
   );
 
   createTest(c.outline.color.black, `outline-color: #000;`);
