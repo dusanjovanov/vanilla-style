@@ -631,7 +631,7 @@ export const defaultTheme = {
     5: "repeat(5, minmax(0, 1fr))",
     6: "repeat(6, minmax(0, 1fr))",
   },
-  gridColumnSpan: {
+  gridColumn: {
     auto: "auto",
     one: "span 1 / span 1",
     two: "span 2 / span 2",
@@ -679,7 +679,7 @@ export const defaultTheme = {
     12: "12",
     13: "13",
   },
-  gridRowSpan: {
+  gridRow: {
     auto: "auto",
     one: "span 1 / span 1",
     two: "span 2 / span 2",

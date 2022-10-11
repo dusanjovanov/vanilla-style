@@ -405,10 +405,10 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     position = this.#p("position");
     gridTemplateColumns = this.#p("gridTemplateColumns");
     gridTemplateRows = this.#p("gridTemplateRows");
-    gridColumnSpan = this.#p("gridColumnSpan");
+    gridColumn = this.#p("gridColumn");
     gridColumnStart = this.#p("gridColumnStart");
     gridColumnEnd = this.#p("gridColumnEnd");
-    gridRowSpan = this.#p("gridRowSpan");
+    gridRow = this.#p("gridRow");
     gridRowStart = this.#p("gridRowStart");
     gridRowEnd = this.#p("gridRowEnd");
     order = this.#p("order");

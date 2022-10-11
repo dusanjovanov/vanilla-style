@@ -47,4 +47,6 @@ test("test1", () => {
   );
 
   createTest(c.outline.color.black, `outline-color: #000;`);
+
+  createTest(c.gridColumn.one, "grid-column: span 1/span 1");
 });
