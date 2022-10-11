@@ -7,7 +7,7 @@ yarn add @dusanjovanov/vanilla-style
 ```
 
 [![npm](https://img.shields.io/npm/v/@dusanjovanov/vanilla-style?color=%236f42c1&style=for-the-badge)](https://www.npmjs.com/package/@dusanjovanov/vanilla-style)
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@dusanjovanov/vanilla-style?color=%236f42c1&style=for-the-badge)](https://bundlephobia.com/package/@dusanjovanov/vanilla-style@0.4.1)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@dusanjovanov/vanilla-style?color=%236f42c1&style=for-the-badge)](https://bundlephobia.com/package/@dusanjovanov/vanilla-style)
 
 ### Usage
 
