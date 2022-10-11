@@ -255,10 +255,22 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
     borderRadius = {
       all: this.#borderRadiusProp("borderRadius"),
       custom: this.#custom("borderRadius"),
-      right: this.#borderRadiusProp(brCssProps.right),
-      left: this.#borderRadiusProp(brCssProps.left),
-      bottom: this.#borderRadiusProp(brCssProps.bottom),
-      top: this.#borderRadiusProp(brCssProps.top),
+      right: this.#borderRadiusProp([
+        "borderTopRightRadius",
+        "borderBottomRightRadius",
+      ]),
+      left: this.#borderRadiusProp([
+        "borderTopLeftRadius",
+        "borderBottomLeftRadius",
+      ]),
+      bottom: this.#borderRadiusProp([
+        "borderBottomLeftRadius",
+        "borderBottomRightRadius",
+      ]),
+      top: this.#borderRadiusProp([
+        "borderTopLeftRadius",
+        "borderTopRightRadius",
+      ]),
       topRight: this.#borderRadiusProp("borderTopRightRadius"),
       bottomRight: this.#borderRadiusProp("borderBottomRightRadius"),
       topLeft: this.#borderRadiusProp("borderTopLeftRadius"),

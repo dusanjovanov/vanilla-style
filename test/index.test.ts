@@ -37,6 +37,11 @@ test("test1", () => {
   );
 
   createTest(
+    c.borderRadius.top.md,
+    "border-top-left-radius: 0.375rem; border-top-right-radius: 0.375rem;"
+  );
+
+  createTest(
     c.outline.shorthand(1, "solid", "black", 1),
     `outline: 1px solid #000;`
   );
