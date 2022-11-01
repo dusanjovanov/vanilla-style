@@ -15,8 +15,6 @@ const sides = ["top", "right", "bottom", "left"];
 
 const borderCssProps = {} as any;
 
-const brCssProps = {} as any;
-
 const capitalize = (s: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
@@ -26,7 +24,6 @@ for (const side of sides) {
     .filter((s) => s !== side)
     .map((s) => `border${capitalize(s)}`);
   borderCssProps[side] = `border${capitalize(side)}`;
-  brCssProps[side] = `border${capitalize(side)}Radius`;
 }
 
 export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
@@ -197,8 +194,18 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
 
     #borderShorthand = (cssProps: string | string[]) => {
       return {
-        width: this.#p("borderWidth", cssProps),
-        style: this.#p("borderStyle", cssProps),
+        width: this.#p(
+          "borderWidth",
+          Array.isArray(cssProps)
+            ? cssProps.map((p) => `${p}Width`)
+            : `${cssProps}Width`
+        ),
+        style: this.#p(
+          "borderStyle",
+          Array.isArray(cssProps)
+            ? cssProps.map((p) => `${p}Style`)
+            : `${cssProps}Style`
+        ),
         color: this.#p("borderColor", cssProps),
         shorthand: <
           BW extends keyof Theme["borderWidth"],
@@ -275,10 +282,10 @@ export function createVanillaStyle<Theme extends GenericTheme>(theme: Theme) {
       bottomRight: this.#borderRadiusProp("borderBottomRightRadius"),
       topLeft: this.#borderRadiusProp("borderTopLeftRadius"),
       bottomLeft: this.#borderRadiusProp("borderBottomLeftRadius"),
-      rightCustom: this.#custom(brCssProps.right),
-      leftCustom: this.#custom(brCssProps.left),
-      topCustom: this.#custom(brCssProps.top),
-      bottomCustom: this.#custom(brCssProps.bottom),
+      rightCustom: this.#custom("borderRightRadius"),
+      leftCustom: this.#custom("borderLeftRadius"),
+      topCustom: this.#custom("borderTopRadius"),
+      bottomCustom: this.#custom("borderBottomRadius"),
     };
 
     #outlineShorthand =

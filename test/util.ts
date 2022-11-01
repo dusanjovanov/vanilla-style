@@ -9,5 +9,6 @@ export const testCSS = (
 ) => {
   const element = document.createElement(tagName);
   element.className = className;
+  expect(className).not.toBe(undefined);
   expect(element).toHaveStyle(css);
 };
